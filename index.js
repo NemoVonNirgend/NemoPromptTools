@@ -1,10 +1,12 @@
 import { NemoCharacterManager } from './features/character-manager/character-manager.js';
 import { initPresetNavigatorForApi } from './archive/navigator.js';
 import { NemoPresetManager } from './features/prompts/prompt-manager.js';
+import { applyNemoNetReasoning } from './reasoning/nemonet-reasoning-config.js';
 
 const API_TYPES = ['openai', 'textgenerationwebui', 'novel', 'kobold', 'horde'];
 
 function initialize() {
+    applyNemoNetReasoning();
     NemoCharacterManager.initialize();
     window.NemoPresetManager = NemoPresetManager;
     const promptList = document.querySelector('#completion_prompt_manager_list');
