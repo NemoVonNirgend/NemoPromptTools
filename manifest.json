@@ -1,0 +1,10 @@
+{
+  "display_name": "Nemo Prompt Tools",
+  "author": "@NemoVonNirgend",
+  "version": "1.0.0",
+  "description": "Preset and character navigation plus prompt management tools.",
+  "js": "index.js",
+  "css": "styles.css",
+  "homePage": "https://github.com/NemoVonNirgend/NemoPromptTools",
+  "loading_order": 1005
+}
