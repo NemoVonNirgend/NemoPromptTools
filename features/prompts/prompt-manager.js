@@ -38,7 +38,7 @@ let isToggleInProgress = false;
 export async function loadAndSetDividerRegex() {
     let finalPatterns = [...NEMO_BUILT_IN_PATTERNS];
     if (ensureSettingsNamespace()) {
-        const savedPatternString = extension_settings[NEMO_EXTENSION_NAME].dividerRegexPattern;
+        const savedPatternString = extension_settings.NemoPresetExt?.dividerRegexPattern ?? extension_settings[NEMO_EXTENSION_NAME].dividerRegexPattern;
         if (savedPatternString) {
             const customPatterns = String(savedPatternString).split(',').map(p => p.trim()).filter(p => p.length > 0);
             finalPatterns.push(...customPatterns);

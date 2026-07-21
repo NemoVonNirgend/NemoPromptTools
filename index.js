@@ -1,19 +1,21 @@
 import { NemoCharacterManager } from './features/character-manager/character-manager.js';
 import { initPresetNavigatorForApi } from './archive/navigator.js';
-import { NemoPresetManager } from './features/prompts/prompt-manager.js';
+import { loadAndSetDividerRegex, NemoPresetManager } from './features/prompts/prompt-manager.js';
 import { applyNemoNetReasoning } from './reasoning/nemonet-reasoning-config.js';
 
 const API_TYPES = ['openai', 'textgenerationwebui', 'novel', 'kobold', 'horde'];
 
-function initialize() {
+async function initialize() {
     applyNemoNetReasoning();
     NemoCharacterManager.initialize();
     window.NemoPresetManager = NemoPresetManager;
+    window.NemoPromptManager = NemoPresetManager;
+    await loadAndSetDividerRegex();
     const promptList = document.querySelector('#completion_prompt_manager_list');
     if (promptList) NemoPresetManager.initialize(promptList);
     API_TYPES.forEach(initPresetNavigatorForApi);
 }
 
 window.NemoPromptTools = Object.freeze({ NemoCharacterManager, NemoPresetManager, initPresetNavigatorForApi });
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize, { once: true });
-else initialize();
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => void initialize(), { once: true });
+else void initialize();
