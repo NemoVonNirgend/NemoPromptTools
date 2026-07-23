@@ -13,6 +13,14 @@ const DEFAULTS = Object.freeze({
     reasoningCapture: true,
 });
 
+const runtimeState = {
+    characterNavigatorInitialized: false,
+    reasoningCaptureInitialized: false,
+    promptList: null,
+    reconcileTimer: null,
+    observer: null,
+};
+
 function getSettings() {
     if (!extension_settings.NemoPromptTools) {
         const legacy = extension_settings.NemoPresetExt ?? {};
@@ -60,26 +68,66 @@ function mountSettings(settings) {
     return true;
 }
 
-function observeSettings(settings) {
+async function reconcileRuntime(settings) {
     mountSettings(settings);
-    const observer = new MutationObserver(() => mountSettings(settings));
-    observer.observe(document.body, { childList: true, subtree: true });
-    window.addEventListener('pagehide', () => observer.disconnect(), { once: true });
+
+    if (settings.reasoningCapture && !runtimeState.reasoningCaptureInitialized) {
+        applyNemoNetReasoning();
+        runtimeState.reasoningCaptureInitialized = true;
+    }
+
+    if (settings.characterNavigator && !runtimeState.characterNavigatorInitialized) {
+        NemoCharacterManager.initialize();
+        runtimeState.characterNavigatorInitialized = true;
+    }
+
+    if (settings.promptManager) {
+        window.NemoPresetManager = NemoPresetManager;
+        window.NemoPromptManager = NemoPresetManager;
+
+        const promptList = document.querySelector('#completion_prompt_manager_list');
+        if (promptList && promptList !== runtimeState.promptList) {
+            runtimeState.promptList = promptList;
+            await NemoPresetManager.initialize(promptList);
+        } else if (promptList && !document.getElementById('nemoPresetSearchContainer')) {
+            NemoPresetManager.refreshUI();
+        }
+    }
+
+    if (settings.presetNavigator) {
+        API_TYPES.forEach(initPresetNavigatorForApi);
+    }
+}
+
+function scheduleReconcile(settings) {
+    clearTimeout(runtimeState.reconcileTimer);
+    runtimeState.reconcileTimer = setTimeout(() => {
+        runtimeState.reconcileTimer = null;
+        void reconcileRuntime(settings);
+    }, 50);
+}
+
+function observeRuntime(settings) {
+    scheduleReconcile(settings);
+
+    runtimeState.observer = new MutationObserver(mutations => {
+        const relevantMutation = mutations.some(mutation =>
+            mutation.type === 'childList' && (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0)
+        );
+        if (relevantMutation) scheduleReconcile(settings);
+    });
+
+    runtimeState.observer.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener('pagehide', () => {
+        runtimeState.observer?.disconnect();
+        clearTimeout(runtimeState.reconcileTimer);
+    }, { once: true });
 }
 
 async function initialize() {
     const settings = getSettings();
-    observeSettings(settings);
-    if (settings.reasoningCapture) applyNemoNetReasoning();
-    if (settings.characterNavigator) NemoCharacterManager.initialize();
-    if (settings.promptManager) {
-        window.NemoPresetManager = NemoPresetManager;
-        window.NemoPromptManager = NemoPresetManager;
-        await loadAndSetDividerRegex();
-        const promptList = document.querySelector('#completion_prompt_manager_list');
-        if (promptList) NemoPresetManager.initialize(promptList);
-    }
-    if (settings.presetNavigator) API_TYPES.forEach(initPresetNavigatorForApi);
+    await loadAndSetDividerRegex();
+    observeRuntime(settings);
 }
 
 window.NemoPromptTools = Object.freeze({ NemoCharacterManager, NemoPresetManager, initPresetNavigatorForApi, getSettings });
