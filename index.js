@@ -13,6 +13,18 @@ const DEFAULTS = Object.freeze({
     reasoningCapture: true,
 });
 
+// Keep these escaped so the regex parser receives the intended Unicode characters
+// regardless of how GitHub, an extension updater, or a browser decodes this source file.
+const DIVIDER_PATTERN_FALLBACKS = Object.freeze([
+    '=+',
+    '\\u2b50\\u2500+', // star + light box-drawing line
+    '\\u2500+',        // light box-drawing line
+    '\\u2501+',        // heavy box-drawing line
+    '\\u2014+',        // em dash
+    '\\u2013+',        // en dash
+    '-+',               // ordinary hyphen
+]);
+
 const runtimeState = {
     characterNavigatorInitialized: false,
     reasoningCaptureInitialized: false,
@@ -35,6 +47,45 @@ function getSettings() {
     const settings = extension_settings.NemoPromptTools;
     for (const [key, value] of Object.entries(DEFAULTS)) settings[key] ??= value;
     return settings;
+}
+
+/**
+ * Compile the prompt divider regex from NemoPresetExt's public contract when available.
+ * The prompt manager historically contained mojibake versions of the box-drawing
+ * patterns, which caused Unicode dash headers to remain ordinary prompt rows.
+ *
+ * The merged value is installed only for the duration of regex compilation, so the
+ * user's Custom dividers setting is neither rewritten nor filled with internal defaults.
+ */
+async function loadDividerRegexWithCoreContract() {
+    const namespace = extension_settings.NemoPresetExt ??= {};
+    const hadOwnPattern = Object.prototype.hasOwnProperty.call(namespace, 'dividerRegexPattern');
+    const originalPattern = namespace.dividerRegexPattern;
+    const userPatterns = String(originalPattern ?? '')
+        .split(',')
+        .map(pattern => pattern.trim())
+        .filter(Boolean);
+
+    let contractPatterns = [];
+    try {
+        const patterns = window.NemoPresetExt?.getDividerPatterns?.();
+        if (Array.isArray(patterns)) contractPatterns = patterns;
+    } catch (error) {
+        console.warn('[Nemo Prompt Tools] Could not read the core divider contract; using safe fallbacks.', error);
+    }
+
+    namespace.dividerRegexPattern = [...new Set([
+        ...DIVIDER_PATTERN_FALLBACKS,
+        ...contractPatterns,
+        ...userPatterns,
+    ])].join(',');
+
+    try {
+        await loadAndSetDividerRegex();
+    } finally {
+        if (hadOwnPattern) namespace.dividerRegexPattern = originalPattern;
+        else delete namespace.dividerRegexPattern;
+    }
 }
 
 function mountSettings(settings) {
@@ -126,7 +177,7 @@ function observeRuntime(settings) {
 
 async function initialize() {
     const settings = getSettings();
-    await loadAndSetDividerRegex();
+    await loadDividerRegexWithCoreContract();
     observeRuntime(settings);
 }
 
