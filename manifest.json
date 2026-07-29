@@ -1,7 +1,7 @@
 {
   "display_name": "Nemo Prompt Tools",
   "author": "@NemoVonNirgend",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Preset and character navigation plus prompt management tools.",
   "js": "index.js",
   "css": "styles.css",
