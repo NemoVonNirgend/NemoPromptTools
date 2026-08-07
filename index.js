@@ -1,186 +1,110 @@
-import { saveSettings, saveSettingsDebounced } from '../../../../script.js';
-import { extension_settings } from '../../../extensions.js';
-import { NemoCharacterManager } from './features/character-manager/character-manager.js';
-import { initPresetNavigatorForApi } from './archive/navigator.js';
-import { loadAndSetDividerRegex, NemoPresetManager } from './features/prompts/prompt-manager.js';
-import { applyNemoNetReasoning } from './reasoning/nemonet-reasoning-config.js';
-
-const API_TYPES = ['openai', 'textgenerationwebui', 'novel', 'kobold', 'horde'];
-const DEFAULTS = Object.freeze({
-    promptManager: true,
-    presetNavigator: true,
-    characterNavigator: true,
-    reasoningCapture: true,
-});
-
-// Keep these escaped so the regex parser receives the intended Unicode characters
-// regardless of how GitHub, an extension updater, or a browser decodes this source file.
-const DIVIDER_PATTERN_FALLBACKS = Object.freeze([
-    '=+',
-    '\\u2b50\\u2500+', // star + light box-drawing line
-    '\\u2500+',        // light box-drawing line
-    '\\u2501+',        // heavy box-drawing line
-    '\\u2014+',        // em dash
-    '\\u2013+',        // en dash
-    '-+',               // ordinary hyphen
-]);
-
-const runtimeState = {
-    characterNavigatorInitialized: false,
-    reasoningCaptureInitialized: false,
-    promptList: null,
-    reconcileTimer: null,
-    observer: null,
-};
-
-function getSettings() {
-    if (!extension_settings.NemoPromptTools) {
-        const legacy = extension_settings.NemoPresetExt ?? {};
-        extension_settings.NemoPromptTools = {
-            promptManager: legacy.enablePromptManager ?? DEFAULTS.promptManager,
-            presetNavigator: legacy.enablePresetNavigator ?? DEFAULTS.presetNavigator,
-            characterNavigator: legacy.enableCharacterNavigator ?? DEFAULTS.characterNavigator,
-            reasoningCapture: legacy.enableReasoningCapture ?? DEFAULTS.reasoningCapture,
-        };
-        saveSettingsDebounced();
-    }
-    const settings = extension_settings.NemoPromptTools;
-    for (const [key, value] of Object.entries(DEFAULTS)) settings[key] ??= value;
-    return settings;
-}
-
 /**
- * Compile the prompt divider regex from NemoPresetExt's public contract when available.
- * The prompt manager historically contained mojibake versions of the box-drawing
- * patterns, which caused Unicode dash headers to remain ordinary prompt rows.
+ * NemoPromptTools compatibility bootstrap.
  *
- * The merged value is installed only for the duration of regex compilation, so the
- * user's Custom dividers setting is neither rewritten nor filled with internal defaults.
+ * NemoPresetExt 6.0 owns the prompt workstation. This package remains useful
+ * during the migration window because older NemoPresetExt releases still need
+ * the standalone runtime. The bootstrap never loads standalone CSS or code when
+ * the merged capability is present.
  */
-async function loadDividerRegexWithCoreContract() {
-    const namespace = extension_settings.NemoPresetExt ??= {};
-    const hadOwnPattern = Object.prototype.hasOwnProperty.call(namespace, 'dividerRegexPattern');
-    const originalPattern = namespace.dividerRegexPattern;
-    const userPatterns = String(originalPattern ?? '')
-        .split(',')
-        .map(pattern => pattern.trim())
-        .filter(Boolean);
 
-    let contractPatterns = [];
-    try {
-        const patterns = window.NemoPresetExt?.getDividerPatterns?.();
-        if (Array.isArray(patterns)) contractPatterns = patterns;
-    } catch (error) {
-        console.warn('[Nemo Prompt Tools] Could not read the core divider contract; using safe fallbacks.', error);
-    }
+const MERGED_CAPABILITY_EVENT = 'nemo:preset-ext-capabilities';
+const BRIDGE_ID = 'nemo-prompt-tools-compat-settings';
+const STYLE_ID = 'nemo-prompt-tools-standalone-styles';
 
-    namespace.dividerRegexPattern = [...new Set([
-        ...DIVIDER_PATTERN_FALLBACKS,
-        ...contractPatterns,
-        ...userPatterns,
-    ])].join(',');
-
-    try {
-        await loadAndSetDividerRegex();
-    } finally {
-        if (hadOwnPattern) namespace.dividerRegexPattern = originalPattern;
-        else delete namespace.dividerRegexPattern;
-    }
+function mergedRuntimeAvailable() {
+    return window.NemoPresetExt?.capabilities?.promptTools === true
+        || window.NemoPromptTools?.mergedIntoCore === true;
 }
 
-function mountSettings(settings) {
-    if (document.getElementById('nemo-prompt-tools-settings')) return true;
-    const container = document.getElementById('extensions_settings') ?? document.getElementById('extensions_settings2');
+function waitForMergedCapability(timeout = 900) {
+    if (mergedRuntimeAvailable()) return Promise.resolve(true);
+
+    return new Promise(resolve => {
+        let settled = false;
+        const finish = value => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            window.removeEventListener(MERGED_CAPABILITY_EVENT, onCapabilities);
+            resolve(value);
+        };
+        const onCapabilities = event => {
+            if (event.detail?.promptTools === true || mergedRuntimeAvailable()) finish(true);
+        };
+        const timer = setTimeout(() => finish(mergedRuntimeAvailable()), timeout);
+        window.addEventListener(MERGED_CAPABILITY_EVENT, onCapabilities);
+    });
+}
+
+function mountCompatibilityNotice() {
+    if (document.getElementById(BRIDGE_ID)) return true;
+    const container = document.getElementById('extensions_settings')
+        ?? document.getElementById('extensions_settings2');
     if (!container) return false;
+
     const host = document.createElement('div');
-    host.id = 'nemo-prompt-tools-settings';
+    host.id = BRIDGE_ID;
     host.className = 'extension_container';
     host.innerHTML = `
         <div class="inline-drawer">
-            <div class="inline-drawer-toggle inline-drawer-header"><b>Nemo Prompt Tools</b><div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div></div>
+            <div class="inline-drawer-toggle inline-drawer-header">
+                <b>Nemo Prompt Tools compatibility</b>
+                <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+            </div>
             <div class="inline-drawer-content">
-                <p class="notes">Changes apply after reloading SillyTavern.</p>
-                ${Object.entries({
-                    promptManager: 'Prompt dropdowns and tools',
-                    presetNavigator: 'Preset navigator',
-                    characterNavigator: 'Character navigator',
-                    reasoningCapture: 'Improved reasoning capture',
-                }).map(([key, label]) => `<label class="checkbox_label"><input type="checkbox" data-setting="${key}" ${settings[key] ? 'checked' : ''}><span>${label}</span></label>`).join('')}
+                <p class="notes">
+                    Prompt Tools is now included in NemoPresetExt 6.0. This bridge is idle and can be
+                    uninstalled after NemoPresetExt has migrated your existing settings.
+                </p>
             </div>
         </div>`;
-    host.addEventListener('change', event => {
-        const input = event.target.closest('input[data-setting]');
-        if (!input) return;
-        settings[input.dataset.setting] = input.checked;
-        saveSettingsDebounced();
-        void saveSettings();
-    });
     container.appendChild(host);
     return true;
 }
 
-async function reconcileRuntime(settings) {
-    mountSettings(settings);
-
-    if (settings.reasoningCapture && !runtimeState.reasoningCaptureInitialized) {
-        applyNemoNetReasoning();
-        runtimeState.reasoningCaptureInitialized = true;
-    }
-
-    if (settings.characterNavigator && !runtimeState.characterNavigatorInitialized) {
-        NemoCharacterManager.initialize();
-        runtimeState.characterNavigatorInitialized = true;
-    }
-
-    if (settings.promptManager) {
-        window.NemoPresetManager = NemoPresetManager;
-        window.NemoPromptManager = NemoPresetManager;
-
-        const promptList = document.querySelector('#completion_prompt_manager_list');
-        if (promptList && promptList !== runtimeState.promptList) {
-            runtimeState.promptList = promptList;
-            await NemoPresetManager.initialize(promptList);
-        } else if (promptList && !document.getElementById('nemoPresetSearchContainer')) {
-            NemoPresetManager.refreshUI();
-        }
-    }
-
-    if (settings.presetNavigator) {
-        API_TYPES.forEach(initPresetNavigatorForApi);
-    }
-}
-
-function scheduleReconcile(settings) {
-    clearTimeout(runtimeState.reconcileTimer);
-    runtimeState.reconcileTimer = setTimeout(() => {
-        runtimeState.reconcileTimer = null;
-        void reconcileRuntime(settings);
-    }, 50);
-}
-
-function observeRuntime(settings) {
-    scheduleReconcile(settings);
-
-    runtimeState.observer = new MutationObserver(mutations => {
-        const relevantMutation = mutations.some(mutation =>
-            mutation.type === 'childList' && (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0)
-        );
-        if (relevantMutation) scheduleReconcile(settings);
+function observeCompatibilityNotice() {
+    if (mountCompatibilityNotice()) return;
+    const observer = new MutationObserver(() => {
+        if (mountCompatibilityNotice()) observer.disconnect();
     });
-
-    runtimeState.observer.observe(document.body, { childList: true, subtree: true });
-    window.addEventListener('pagehide', () => {
-        runtimeState.observer?.disconnect();
-        clearTimeout(runtimeState.reconcileTimer);
-    }, { once: true });
+    observer.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener('pagehide', () => observer.disconnect(), { once: true });
 }
 
-async function initialize() {
-    const settings = getSettings();
-    await loadDividerRegexWithCoreContract();
-    observeRuntime(settings);
+function loadStandaloneStyles() {
+    const existing = document.getElementById(STYLE_ID);
+    if (existing) return Promise.resolve();
+
+    return new Promise(resolve => {
+        const link = document.createElement('link');
+        link.id = STYLE_ID;
+        link.rel = 'stylesheet';
+        link.href = new URL('./styles.css', import.meta.url).href;
+        link.addEventListener('load', resolve, { once: true });
+        link.addEventListener('error', () => {
+            console.warn('[Nemo Prompt Tools] Standalone stylesheet failed to load.');
+            resolve();
+        }, { once: true });
+        document.head.appendChild(link);
+    });
 }
 
-window.NemoPromptTools = Object.freeze({ NemoCharacterManager, NemoPresetManager, initPresetNavigatorForApi, getSettings });
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => void initialize(), { once: true });
-else void initialize();
+async function initializeCompatibilityBridge() {
+    const merged = await waitForMergedCapability();
+    if (merged) {
+        observeCompatibilityNotice();
+        window.NemoPromptToolsBridge = Object.freeze({ mode: 'merged', idle: true });
+        console.info('[Nemo Prompt Tools] Merged NemoPresetExt runtime detected; standalone runtime is idle.');
+        return;
+    }
+
+    await loadStandaloneStyles();
+    await import('./standalone-runtime.js');
+    window.NemoPromptToolsBridge = Object.freeze({ mode: 'standalone', idle: false });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => void initializeCompatibilityBridge(), { once: true });
+} else {
+    void initializeCompatibilityBridge();
+}

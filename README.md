@@ -1,9 +1,17 @@
-# Nemo Prompt Tools
+# Nemo Prompt Tools compatibility bridge
 
-Standalone SillyTavern extension for preset navigation, character navigation, prompt dropdowns/tools, and improved reasoning capture.
+NemoPromptTools has been merged back into **NemoPresetExt 6.0**. Version 1.2 is a transition release for users who may still run an older NemoPresetExt build.
 
-Install through Nemo Hub or SillyTavern's third-party extension installer with:
+## Behavior
 
-`https://github.com/NemoVonNirgend/NemoPromptTools`
+- With NemoPresetExt 6.0 or newer, this extension detects the merged prompt-workstation capability, loads no standalone stylesheet or runtime, and displays a small migration notice.
+- With an older NemoPresetExt release or without NemoPresetExt, the existing standalone PromptTools runtime and stylesheet load normally.
+- Existing `extension_settings.NemoPromptTools` data is left untouched so NemoPresetExt 6.0 can migrate it and downgrades remain reversible.
 
-The native Extensions settings drawer provides independent switches for each runtime. Changes persist in `extension_settings.NemoPromptTools` and apply after reload. On first launch, compatible choices migrate from the former NemoPresetExt settings namespace. Custom divider patterns remain owned by NemoPresetExt and are consumed when that core extension is installed.
+## Removal
+
+After NemoPresetExt 6.0 has loaded once and migrated your settings, this compatibility extension can be uninstalled.
+
+The maintained prompt workstation now lives at:
+
+`https://github.com/NemoVonNirgend/NemoPresetExt`
