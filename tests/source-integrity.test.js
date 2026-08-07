@@ -81,6 +81,12 @@ test('standalone prompt glyphs use canonical CSS escapes', () => {
     assert.doesNotMatch(styles, /\\E2\s+\\2013\s+\\B6/u);
 });
 
+test('narrative heuristics retain straight and curly apostrophe support', () => {
+    const reasoning = read('reasoning/reasoning-capture-core.js');
+    assert.ok(reasoning.includes("[\\p{L}\\p{M}'’\\-]*"));
+    assert.equal(reasoning.includes("[\\p{L}\\p{M}''\\-]*"), false);
+});
+
 test('compatibility bridge gives merged core a safe startup grace period', () => {
     const index = read('index.js');
     const match = index.match(/waitForMergedCapability\(timeout\s*=\s*(\d+)\)/u);
