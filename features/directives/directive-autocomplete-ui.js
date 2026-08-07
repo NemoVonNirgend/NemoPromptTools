@@ -277,10 +277,10 @@ function renderSuggestions() {
             icon = '$';
         } else if (suggestion.type === 'value') {
             iconClass = 'nemo-ac-icon-value';
-            icon = 'âœ“';
+            icon = '✓';
         } else {
             iconClass = 'nemo-ac-icon-prompt';
-            icon = 'ðŸ“„';
+            icon = '📄';
         }
 
         html += `
@@ -297,7 +297,7 @@ function renderSuggestions() {
     // Add footer hint
     html += `
         <div class="nemo-ac-footer">
-            <kbd>â†‘</kbd><kbd>â†“</kbd> Navigate Â· <kbd>Tab</kbd>/<kbd>Enter</kbd> Select Â· <kbd>Esc</kbd> Close
+            <kbd>↑</kbd><kbd>↓</kbd> Navigate · <kbd>Tab</kbd>/<kbd>Enter</kbd> Select · <kbd>Esc</kbd> Close
         </div>
     `;
 

@@ -35,7 +35,7 @@ export class PresetNavigator {
     escapeHtml(unsafe) {
         if (typeof unsafe !== 'string') return '';
         return unsafe
-            .replace(/&/g, "&amp;")
+            .replace(/&/g, "&")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
@@ -474,7 +474,7 @@ export class PresetNavigator {
         nameEl.title = itemName;
         const dateEl = document.createElement('div');
         dateEl.className = 'item-date';
-        dateEl.textContent = data.lastModified ? new Date(data.lastModified).toLocaleDateString() : 'â€”';
+        dateEl.textContent = data.lastModified ? new Date(data.lastModified).toLocaleDateString() : '—';
         itemEl.appendChild(icon);
         itemEl.appendChild(nameEl);
         itemEl.appendChild(dateEl);
@@ -904,7 +904,7 @@ export class PresetNavigator {
     }
     showFilterMenu(e) {
         e.stopPropagation(); this.hideContextMenu();
-        const options = { 'all': 'All Items', 'favorites': 'â­ Favorites', 'uncategorized': 'Uncategorized', 'has-image': 'With Images' };
+        const options = { 'all': 'All Items', 'favorites': '⭐ Favorites', 'uncategorized': 'Uncategorized', 'has-image': 'With Images' };
         const menu = document.createElement('ul'); menu.className = 'nemo-context-menu';
         menu.innerHTML = Object.entries(options).map(([key, value]) => `<li data-action="filter" data-value="${key}" class="${this.currentFilter === key ? 'active' : ''}">${value}</li>`).join('');
         this.showMiniMenu(e.currentTarget, menu);
@@ -1022,7 +1022,7 @@ export class PresetNavigator {
                     select.appendChild(new Option(newName, newKey));
                 }
 
-                showToast(`Preset "${fileName}" imported successfully! âœ“`, 'success');
+                showToast(`Preset "${fileName}" imported successfully! ✓`, 'success');
                 this.allPresets = await this.fetchPresetList();
                 this.render();
 
@@ -1030,7 +1030,7 @@ export class PresetNavigator {
                 console.error(`${LOG_PREFIX} Preset import error:`, ex);
 
                 let errorMessage = '<div style="text-align: left;">';
-                errorMessage += '<h3 style="color: #ff6b6b; margin-bottom: 10px;">âŒ Import Failed</h3>';
+                errorMessage += '<h3 style="color: #ff6b6b; margin-bottom: 10px;">❌ Import Failed</h3>';
 
                 if (ex.name === 'AbortError') {
                     errorMessage += '<p><strong>Issue:</strong> Request timeout (server took too long to respond)</p>';

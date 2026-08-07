@@ -39,7 +39,7 @@ export const SILLYTAVERN_MACROS = [
 
     // Time/Date Macros
     { macro: '{{time}}', description: 'Current system time.', category: 'Time/Date' },
-    { macro: '{{time_UTCÂ±X}}', description: 'Current time in specified UTC offset (e.g. {{time_UTC+2}}).', category: 'Time/Date' },
+    { macro: '{{time_UTC±X}}', description: 'Current time in specified UTC offset (e.g. {{time_UTC+2}}).', category: 'Time/Date' },
     { macro: '{{timeDiff::(time1)::(time2)}}', description: 'Time difference between time1 and time2.', category: 'Time/Date' },
     { macro: '{{date}}', description: 'Current system date.', category: 'Time/Date' },
     { macro: '{{weekday}}', description: 'The current weekday.', category: 'Time/Date' },

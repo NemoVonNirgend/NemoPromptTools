@@ -249,7 +249,7 @@ function setupTagFilterFixed() {
     filterContainer.innerHTML = `
         <input type="text"
                id="nemo-tag-search"
-               placeholder="ðŸ” Search prompts by name, tag, or description..."
+               placeholder="🔍 Search prompts by name, tag, or description..."
                class="nemo-search-input text_pole">
         <div class="nemo-tag-list" id="nemo-tag-list"></div>
         <div class="nemo-filter-stats" id="nemo-filter-stats"></div>
@@ -470,7 +470,7 @@ function updateTokenCostTrackerFixed() {
 
         if (warnElement && warnThreshold) {
             if (totalCost > warnThreshold) {
-                warnElement.textContent = `âš ï¸ Exceeds threshold (${warnThreshold.toLocaleString()})`;
+                warnElement.textContent = `⚠️ Exceeds threshold (${warnThreshold.toLocaleString()})`;
                 warnElement.style.display = 'inline';
                 warnElement.style.color = '#ff4444';
             } else {

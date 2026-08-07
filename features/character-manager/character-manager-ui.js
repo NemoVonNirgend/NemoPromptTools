@@ -481,7 +481,7 @@ export class CharacterManagerUI {
 
     showFilterMenu(e) {
         e.stopPropagation(); this.hideContextMenu();
-        const options = { 'all': 'All Items', 'favorites': 'â­ Favorites', 'uncategorized': 'Uncategorized' };
+        const options = { 'all': 'All Items', 'favorites': '⭐ Favorites', 'uncategorized': 'Uncategorized' };
         const menu = document.createElement('ul'); menu.className = 'nemo-context-menu';
         menu.innerHTML = Object.entries(options).map(([key, value]) => `<li data-action="filter" data-value="${key}" class="${this.currentFilter === key ? 'active' : ''}">${value}</li>`).join('');
         this.showMiniMenu(e.currentTarget, menu);

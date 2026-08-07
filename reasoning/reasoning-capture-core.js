@@ -42,8 +42,8 @@ const TAGLESS_HINT_PATTERNS = [
     /^\s*STORY SECTION\s+[1-9]\s*:/i,
 ];
 
-const NARRATIVE_ACTION_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M}'’\-]*\s+(?:opened|closed|looked|glanced|turned|stepped|walked|said|whispered|smiled|frowned|nodded|shook|moved|ran|jumped|sat|stood|reached|pulled|pushed|crossed|entered|left|waved)\b/u;
-const NARRATIVE_DIALOGUE_PATTERN = /^"[^"\r\n]{1,500}"\s+(?:(?:[\p{L}\p{M}][\p{L}\p{M}'’\-]*)\s+)?(?:said|asked|whispered|replied|murmured|shouted|answered|called)\b/u;
+const NARRATIVE_ACTION_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M}''\-]*\s+(?:opened|closed|looked|glanced|turned|stepped|walked|said|whispered|smiled|frowned|nodded|shook|moved|ran|jumped|sat|stood|reached|pulled|pushed|crossed|entered|left|waved)\b/u;
+const NARRATIVE_DIALOGUE_PATTERN = /^"[^"\r\n]{1,500}"\s+(?:(?:[\p{L}\p{M}][\p{L}\p{M}''\-]*)\s+)?(?:said|asked|whispered|replied|murmured|shouted|answered|called)\b/u;
 const NARRATIVE_SCENE_PATTERN = /^(?:The\s+)?(?:room|air|rain|wind|silence|light|darkness|door|street|sky|sun|moon|night|day)\s+(?:fell|eased|shifted|moved|settled|rose|opened|closed|darkened|brightened|stirred|hung|pressed|spilled|filtered|stretched|broke)\b/i;
 
 function normalizeDelimiters(delimiters) {
