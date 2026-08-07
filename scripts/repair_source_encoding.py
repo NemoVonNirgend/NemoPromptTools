@@ -16,6 +16,11 @@ SKIP_PARTS = {'.git', '.github', 'node_modules', 'tests', 'scripts'}
 MOJIBAKE_MARKERS = ('Ã¢', 'Ã°', 'Ãƒ', 'Â ', 'Â ', 'â€', 'â€“', 'â€”', 'â„¢', 'ðŸ', '\ufffd')
 C1_PATTERN = re.compile(r'[\u0080-\u009f]')
 CONTENT_PATTERN = re.compile(r"(content\s*:\s*)(['\"])(.*?)(\2)(\s*;)", re.IGNORECASE)
+KNOWN_CSS_CONTENT_REPAIRS = {
+    # The historical disclosure triangle was multiply decoded. ftfy can reduce
+    # it to byte-like code points rather than the intended U+25B6 glyph.
+    r'\E2 \2013 \B6 ': r'\25B6 ',
+}
 
 
 def iter_targets():
@@ -47,7 +52,10 @@ def escape_css_content_literals(text: str) -> str:
         )
         return f'{match.group(1)}{match.group(2)}{escaped}{match.group(4)}{match.group(5)}'
 
-    return CONTENT_PATTERN.sub(replace, text)
+    repaired = CONTENT_PATTERN.sub(replace, text)
+    for damaged, canonical in KNOWN_CSS_CONTENT_REPAIRS.items():
+        repaired = repaired.replace(damaged, canonical)
+    return repaired
 
 
 def suspicious(text: str) -> list[str]:
@@ -55,6 +63,9 @@ def suspicious(text: str) -> list[str]:
     controls = sorted({hex(ord(char)) for char in C1_PATTERN.findall(text)})
     if controls:
         found.append(f'C1 controls: {controls}')
+    for damaged in KNOWN_CSS_CONTENT_REPAIRS:
+        if damaged in text:
+            found.append(f'malformed CSS glyph escape: {damaged}')
     return found
 
 
