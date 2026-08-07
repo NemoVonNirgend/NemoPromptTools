@@ -16,7 +16,10 @@ function mergedRuntimeAvailable() {
         || window.NemoPromptTools?.mergedIntoCore === true;
 }
 
-function waitForMergedCapability(timeout = 900) {
+// Give the merged module graph enough time to evaluate on slower devices before
+// falling back to the standalone runtime. The capability event resolves this
+// immediately during ordinary NemoPresetExt 6.0 startup.
+function waitForMergedCapability(timeout = 3000) {
     if (mergedRuntimeAvailable()) return Promise.resolve(true);
 
     return new Promise(resolve => {

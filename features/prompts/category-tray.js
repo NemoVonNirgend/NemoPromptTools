@@ -616,7 +616,7 @@ function createTopLevelContainer(promptList, promptIds) {
     const summary = document.createElement('summary');
     summary.innerHTML = `
         <span class="completion_prompt_manager_prompt_name">
-            <a>ðŸ“Œ Top Level Prompts</a>
+            <a>📌 Top Level Prompts</a>
         </span>
         <span class="nemo-section-count">(${promptIds.length})</span>
         <div class="nemo-section-progress-container">
@@ -1409,7 +1409,7 @@ function openTray(section) {
                     </div>
                 </div>
                 <button class="nemo-tray-toggle-all ${allEnabled ? 'nemo-all-enabled' : ''}" title="${allEnabled ? 'Disable All' : 'Enable All'}">
-                    ${allEnabled ? 'â˜‘' : 'â˜'} All
+                    ${allEnabled ? '☑' : '☐'} All
                 </button>
                 <button class="nemo-tray-close" title="Close (Esc)">&times;</button>
             </div>
@@ -1488,7 +1488,7 @@ function openTray(section) {
                             <span class="nemo-prompt-card-edit" title="Preview content">
                                 <i class="fa-solid fa-eye fa-xs"></i>
                             </span>
-                            <span class="nemo-prompt-card-status">${p.isEnabled ? 'âœ“' : ''}</span>
+                            <span class="nemo-prompt-card-status">${p.isEnabled ? '✓' : ''}</span>
                         </div>
                     </div>
                     <div class="nemo-prompt-card-meta">
@@ -1506,7 +1506,7 @@ function openTray(section) {
     trayContent += `
         </div>
         <div class="nemo-tray-footer">
-            <span class="nemo-tray-hint">Click to toggle â€¢ Drag â‰¡ to reorder â€¢ ${prompts.filter(p => !p.isSubSectionHeader && p.isEnabled).length}/${prompts.filter(p => !p.isSubSectionHeader).length} active</span>
+            <span class="nemo-tray-hint">Click to toggle • Drag ≡ to reorder • ${prompts.filter(p => !p.isSubSectionHeader && p.isEnabled).length}/${prompts.filter(p => !p.isSubSectionHeader).length} active</span>
         </div>
     `;
 
@@ -1768,14 +1768,14 @@ function openTray(section) {
         // Update footer counter
         const footer = tray.querySelector('.nemo-tray-hint');
         if (footer) {
-            footer.textContent = `Click to toggle â€¢ â†‘â†“â†â†’ Navigate â€¢ Space/Enter Toggle â€¢ ${enabledCount}/${prompts.length} active`;
+            footer.textContent = `Click to toggle • ↑↓←→ Navigate • Space/Enter Toggle • ${enabledCount}/${prompts.length} active`;
         }
 
         // Update toggle-all button
         const toggleAllBtn = tray.querySelector('.nemo-tray-toggle-all');
         if (toggleAllBtn) {
             toggleAllBtn.classList.toggle('nemo-all-enabled', allEnabled);
-            toggleAllBtn.innerHTML = `${allEnabled ? 'â˜‘' : 'â˜'} All`;
+            toggleAllBtn.innerHTML = `${allEnabled ? '☑' : '☐'} All`;
             toggleAllBtn.title = allEnabled ? 'Disable All' : 'Enable All';
         }
 
@@ -1844,7 +1844,7 @@ function openTray(section) {
                     const prompt = prompts.find(p => p.identifier === identifier);
                     if (prompt?.isEnabled) {
                         card.classList.add('nemo-prompt-card-enabled');
-                        card.querySelector('.nemo-prompt-card-status').textContent = 'âœ“';
+                        card.querySelector('.nemo-prompt-card-status').textContent = '✓';
                     } else {
                         card.classList.remove('nemo-prompt-card-enabled');
                         card.querySelector('.nemo-prompt-card-status').textContent = '';
@@ -1915,7 +1915,7 @@ function openTray(section) {
         tray.querySelectorAll('.nemo-prompt-card').forEach(card => {
             if (newState) {
                 card.classList.add('nemo-prompt-card-enabled');
-                card.querySelector('.nemo-prompt-card-status').textContent = 'âœ“';
+                card.querySelector('.nemo-prompt-card-status').textContent = '✓';
             } else {
                 card.classList.remove('nemo-prompt-card-enabled');
                 card.querySelector('.nemo-prompt-card-status').textContent = '';
@@ -1943,7 +1943,7 @@ function openTray(section) {
                     prompt.isEnabled = enabled;
                     if (enabled) {
                         card.classList.add('nemo-prompt-card-enabled');
-                        card.querySelector('.nemo-prompt-card-status').textContent = 'âœ“';
+                        card.querySelector('.nemo-prompt-card-status').textContent = '✓';
                     } else {
                         card.classList.remove('nemo-prompt-card-enabled');
                         card.querySelector('.nemo-prompt-card-status').textContent = '';
@@ -2420,7 +2420,7 @@ function updateTrayFooter(tray, prompts) {
     const footer = tray.querySelector('.nemo-tray-hint');
     if (footer) {
         const enabledCount = prompts.filter(p => p.isEnabled).length;
-        footer.textContent = `Click to toggle â€¢ Drag â‰¡ to reorder â€¢ ${enabledCount}/${prompts.length} active`;
+        footer.textContent = `Click to toggle • Drag ≡ to reorder • ${enabledCount}/${prompts.length} active`;
     }
 
     // Also update the toggle-all button state
@@ -2429,7 +2429,7 @@ function updateTrayFooter(tray, prompts) {
         const enabledCount = prompts.filter(p => p.isEnabled).length;
         const allEnabled = enabledCount === prompts.length;
         toggleAllBtn.classList.toggle('nemo-all-enabled', allEnabled);
-        toggleAllBtn.innerHTML = `${allEnabled ? 'â˜‘' : 'â˜'} All`;
+        toggleAllBtn.innerHTML = `${allEnabled ? '☑' : '☐'} All`;
         toggleAllBtn.title = allEnabled ? 'Disable All' : 'Enable All';
     }
 }
@@ -2445,7 +2445,7 @@ function getAllSections() {
     if (topLevelPromptsContainer) {
         sections.push({
             id: TOP_LEVEL_SECTION_ID,
-            name: 'ðŸ“Œ Top Level Prompts',
+            name: '📌 Top Level Prompts',
             section: topLevelPromptsContainer
         });
     }

@@ -49,7 +49,7 @@ export function showConflictToast(issues, promptId, onResolve) {
 
     let content = '<div class="nemo-toast-header">';
     if (errors.length > 0) {
-        content += '<span class="nemo-toast-icon nemo-toast-error">âš ï¸</span>';
+        content += '<span class="nemo-toast-icon nemo-toast-error">⚠️</span>';
         content += '<span class="nemo-toast-title">Prompt Conflict Detected</span>';
     } else {
         content += '<span class="nemo-toast-icon nemo-toast-warning">âš </span>';
@@ -152,7 +152,7 @@ export function showMessageTriggerToast(triggered, messageCount) {
     const disabled = triggered.filter(t => t.action === 'disable');
 
     let content = '<div class="nemo-toast-header">';
-    content += '<span class="nemo-toast-icon">ðŸ“Š</span>';
+    content += '<span class="nemo-toast-icon">📊</span>';
     content += `<span class="nemo-toast-title">Message Trigger (${messageCount} messages)</span>`;
     content += '<button class="nemo-toast-dismiss" aria-label="Dismiss">&times;</button>';
     content += '</div>';
@@ -161,7 +161,7 @@ export function showMessageTriggerToast(triggered, messageCount) {
 
     if (enabled.length > 0) {
         content += '<div class="nemo-trigger-section">';
-        content += '<strong class="nemo-trigger-enabled">âœ“ Enabled:</strong>';
+        content += '<strong class="nemo-trigger-enabled">✓ Enabled:</strong>';
         content += '<ul class="nemo-trigger-list">';
         for (const item of enabled) {
             content += `<li title="${escapeHtml(item.reason)}">${escapeHtml(item.name)}</li>`;
@@ -171,7 +171,7 @@ export function showMessageTriggerToast(triggered, messageCount) {
 
     if (disabled.length > 0) {
         content += '<div class="nemo-trigger-section">';
-        content += '<strong class="nemo-trigger-disabled">âœ— Disabled:</strong>';
+        content += '<strong class="nemo-trigger-disabled">✗ Disabled:</strong>';
         content += '<ul class="nemo-trigger-list">';
         for (const item of disabled) {
             content += `<li title="${escapeHtml(item.reason)}">${escapeHtml(item.name)}</li>`;
@@ -372,7 +372,7 @@ export function addDirectiveDocumentation() {
             // Create a floating help button
             const helpButton = document.createElement('button');
             helpButton.className = 'nemo-directive-help-button';
-            helpButton.innerHTML = 'â„¹ï¸ Directive Help';
+            helpButton.innerHTML = 'ℹ️ Directive Help';
             helpButton.type = 'button';
             helpButton.title = 'Click for directive syntax help';
             helpButton.addEventListener('click', (e) => {
@@ -395,7 +395,7 @@ export function addDirectiveDocumentation() {
     // Create help icon
     const helpIcon = document.createElement('span');
     helpIcon.className = 'nemo-directive-help';
-    helpIcon.innerHTML = '&nbsp;<a href="#" class="nemo-help-icon" title="Click for directive syntax help">â„¹ï¸</a>';
+    helpIcon.innerHTML = '&nbsp;<a href="#" class="nemo-help-icon" title="Click for directive syntax help">ℹ️</a>';
 
     const helpLink = helpIcon.querySelector('.nemo-help-icon');
     helpLink.addEventListener('click', (e) => {

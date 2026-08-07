@@ -1022,7 +1022,7 @@ export function evaluateMessageTriggers(messageCount, allPrompts) {
                     id: prompt.identifier,
                     name: prompt.name,
                     action: 'enable',
-                    reason: `Message count (${messageCount}) entered range [${start}-${end === Infinity ? 'âˆž' : end}]`
+                    reason: `Message count (${messageCount}) entered range [${start}-${end === Infinity ? '∞' : end}]`
                 });
             } else if (!shouldBeActive && isEnabled) {
                 result.toDisable.push(prompt.identifier);
@@ -1030,7 +1030,7 @@ export function evaluateMessageTriggers(messageCount, allPrompts) {
                     id: prompt.identifier,
                     name: prompt.name,
                     action: 'disable',
-                    reason: `Message count (${messageCount}) outside range [${start}-${end === Infinity ? 'âˆž' : end}]`
+                    reason: `Message count (${messageCount}) outside range [${start}-${end === Infinity ? '∞' : end}]`
                 });
             }
         }

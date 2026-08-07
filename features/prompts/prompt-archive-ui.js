@@ -41,7 +41,7 @@ export const NemoPromptArchiveUI = {
         archiveSection.innerHTML = `
             <summary>
                 <span style="color: var(--nemo-primary-accent); font-weight: bold;">
-                    ðŸ“ Prompt Archive
+                    📁 Prompt Archive
                 </span>
                 <div class="nemo-right-controls-wrapper">
                     <button class="menu_button nemo-section-master-toggle" id="nemo-create-archive-btn" title="Create new archive">
@@ -368,7 +368,7 @@ export const NemoPromptArchiveUI = {
         const systemPromptCount = archive.metadata.totalSystemPrompts || 0;
         
         const message = `Are you sure you want to ${action} your current prompts with "${archive.name}"?\n\n` +
-                       `This archive contains:\nâ€¢ ${promptCount} prompts\nâ€¢ ${systemPromptCount} system prompts\n\n` +
+                       `This archive contains:\n• ${promptCount} prompts\n• ${systemPromptCount} system prompts\n\n` +
                        (mergeMode ? 'These will be added to your current setup.' : 'This will replace all your current prompts!');
         
         if (confirm(message)) {
@@ -385,15 +385,15 @@ export const NemoPromptArchiveUI = {
                 
                 if (success) {
                     this.showNotification(
-                        `âœ… Archive "${archive.name}" ${mergeMode ? 'merged' : 'restored'} successfully!\n\n` +
-                        `ðŸ“ ${promptCount} prompts added to active prompt arrays\n` +
-                        `âš™ï¸ ${systemPromptCount} system prompts processed\n\n` +
+                        `✅ Archive "${archive.name}" ${mergeMode ? 'merged' : 'restored'} successfully!\n\n` +
+                        `📝 ${promptCount} prompts added to active prompt arrays\n` +
+                        `⚙️ ${systemPromptCount} system prompts processed\n\n` +
                         `Prompts are now available in the prompt manager and will be used in chat completion.`,
                         'success'
                     );
                 } else {
                     this.showNotification(
-                        `âŒ Archive restoration had issues. Some prompts may not have been restored correctly.\n\n` +
+                        `❌ Archive restoration had issues. Some prompts may not have been restored correctly.\n\n` +
                         `Check the browser console (F12) for detailed error information.`,
                         'error'
                     );
@@ -424,7 +424,7 @@ export const NemoPromptArchiveUI = {
         const stats = NemoPromptArchive.getArchiveStats();
         
         if (stats.totalArchives === 0) {
-            statsContainer.innerHTML = 'ðŸ“ No archives created yet';
+            statsContainer.innerHTML = '📁 No archives created yet';
             return;
         }
         
@@ -543,13 +543,13 @@ export const NemoPromptArchiveUI = {
         
         if (success) {
             this.showNotification(
-                `âœ… Successfully added "${promptName}" to current preset!\n\n` +
+                `✅ Successfully added "${promptName}" to current preset!\n\n` +
                 `The prompt is now available in your prompt manager and will be used in chat completion.`,
                 'success'
             );
         } else {
             this.showNotification(
-                `âš ï¸ Could not add "${promptName}" to current preset.\n\n` +
+                `⚠️ Could not add "${promptName}" to current preset.\n\n` +
                 `It may already exist or there was an error. Check the console for details.`,
                 'error'
             );

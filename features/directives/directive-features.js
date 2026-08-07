@@ -109,7 +109,7 @@ function setupTagFilter() {
         filterContainer.innerHTML = `
             <input type="text"
                    id="nemo-tag-search"
-                   placeholder="ðŸ” Search prompts by name, tag, or description..."
+                   placeholder="🔍 Search prompts by name, tag, or description..."
                    class="nemo-search-input">
             <div class="nemo-tag-list" id="nemo-tag-list"></div>
             <div class="nemo-filter-stats" id="nemo-filter-stats"></div>
@@ -440,7 +440,7 @@ function updateTokenCostTracker() {
 
         if (warnElement && warnThreshold) {
             if (totalCost > warnThreshold) {
-                warnElement.textContent = `âš ï¸ Exceeds threshold (${warnThreshold.toLocaleString()})`;
+                warnElement.textContent = `⚠️ Exceeds threshold (${warnThreshold.toLocaleString()})`;
                 warnElement.style.display = 'inline';
             } else {
                 warnElement.style.display = 'none';
@@ -589,7 +589,7 @@ function setupHelpPanel() {
         helpPanel.className = 'nemo-help-panel hidden';
         helpPanel.innerHTML = `
             <div class="nemo-help-content">
-                <button class="nemo-help-close">Ã—</button>
+                <button class="nemo-help-close">×</button>
                 <div class="nemo-help-body" id="nemo-help-body"></div>
             </div>
         `;
@@ -647,7 +647,7 @@ export function showHelpPanel(promptId) {
         if (directives.documentationUrl) {
             html += `<div class="nemo-help-section">
                 <a href="${escapeHtml(directives.documentationUrl)}" target="_blank" class="nemo-help-link">
-                    ðŸ“š View Documentation
+                    📚 View Documentation
                 </a>
             </div>`;
         }

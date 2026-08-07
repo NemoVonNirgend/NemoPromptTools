@@ -724,7 +724,7 @@ export class PromptNavigator {
     showFilterMenu(e) {
         e.stopPropagation(); 
         this.hideContextMenu();
-        const options = { 'all': 'All Items', 'favorites': 'â­ Favorites', 'uncategorized': 'Uncategorized' };
+        const options = { 'all': 'All Items', 'favorites': '⭐ Favorites', 'uncategorized': 'Uncategorized' };
         const menu = document.createElement('ul'); 
         menu.className = 'nemo-context-menu';
         menu.innerHTML = Object.entries(options).map(([key, value]) => 
@@ -831,7 +831,7 @@ export class PromptNavigator {
             // Check if this is a header/divider by looking for typical header patterns
             const nameEl = item.querySelector('.completion_prompt_manager_prompt_name a');
             const name = nameEl ? nameEl.textContent.trim() : '';
-            const isHeader = name.match(/^[\=\â­\â”\-\+]{2,}/) || item.classList.contains('nemo-header-item');
+            const isHeader = name.match(/^[\=\⭐\━\-\+]{2,}/) || item.classList.contains('nemo-header-item');
             return isHeader && !item.closest('details.nemo-engine-section');
         });
         
@@ -848,7 +848,7 @@ export class PromptNavigator {
         });
 
         if (headers.length === 0) {
-            toastr.info('No headers found in the prompt manager. Headers are prompts that start with divider patterns like ===, â­â”€, or â”â”.');
+            toastr.info('No headers found in the prompt manager. Headers are prompts that start with divider patterns like ===, ⭐─, or ━━.');
             return;
         }
 

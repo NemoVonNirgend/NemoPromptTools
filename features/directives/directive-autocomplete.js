@@ -312,7 +312,7 @@ const DIRECTIVE_DEFINITIONS = [
         directive: '@icon',
         syntax: '@icon <emoji>',
         description: 'Custom emoji icon for prompt',
-        example: '@icon ðŸ”¥',
+        example: '@icon 🔥',
         requiresValue: true,
         valueType: 'text'
     },
@@ -630,26 +630,26 @@ const VALUE_SUGGESTIONS = {
         { value: '#00D9FF', description: 'Electric Blue - High priority', aliases: ['electric', 'bright-blue'] }
     ],
     '@icon': [
-        { value: 'ðŸ”¥', description: 'Fire - Hot, intense, popular', aliases: ['fire', 'hot', 'flame'] },
-        { value: 'âš ï¸', description: 'Warning - Caution, experimental', aliases: ['warning', 'caution', 'alert'] },
-        { value: 'âœ¨', description: 'Sparkles - New, special, enhanced', aliases: ['sparkles', 'new', 'shine', 'star'] },
-        { value: 'ðŸŽ¯', description: 'Target - Focused, precise', aliases: ['target', 'aim', 'focus'] },
-        { value: 'ðŸš€', description: 'Rocket - Fast, powerful, advanced', aliases: ['rocket', 'fast', 'speed'] },
-        { value: 'ðŸ’Ž', description: 'Diamond - Premium, quality', aliases: ['diamond', 'gem', 'premium'] },
-        { value: 'ðŸ›¡ï¸', description: 'Shield - Protection, safety', aliases: ['shield', 'protect', 'defense'] },
-        { value: 'âš”ï¸', description: 'Swords - Combat, action', aliases: ['sword', 'swords', 'combat', 'battle'] },
-        { value: 'ðŸŽ­', description: 'Theater - Roleplay, personas', aliases: ['theater', 'mask', 'roleplay', 'rp'] },
-        { value: 'ðŸ§ ', description: 'Brain - Intelligence, thinking', aliases: ['brain', 'think', 'smart'] },
-        { value: 'ðŸ’¬', description: 'Speech - Dialogue, conversation', aliases: ['speech', 'talk', 'dialogue', 'chat'] },
-        { value: 'ðŸ“š', description: 'Books - Knowledge, documentation', aliases: ['book', 'books', 'docs', 'knowledge'] },
-        { value: 'ðŸŽ¨', description: 'Art - Creative, visual', aliases: ['art', 'paint', 'creative'] },
-        { value: 'ðŸ”§', description: 'Wrench - Utility, tools', aliases: ['wrench', 'tool', 'utility', 'fix'] },
-        { value: 'â­', description: 'Star - Featured, recommended', aliases: ['star', 'featured', 'favorite'] },
-        { value: 'ðŸŽª', description: 'Circus - Fun, entertainment', aliases: ['circus', 'fun', 'party'] },
-        { value: 'ðŸŒ™', description: 'Moon - Night, dark themes', aliases: ['moon', 'night', 'dark'] },
-        { value: 'â˜€ï¸', description: 'Sun - Day, bright, positive', aliases: ['sun', 'day', 'bright', 'light'] },
-        { value: 'â¤ï¸', description: 'Heart - Love, romance, passion', aliases: ['heart', 'love', 'romance'] },
-        { value: 'ðŸ’€', description: 'Skull - Dark, horror, death', aliases: ['skull', 'death', 'horror', 'spooky'] }
+        { value: '🔥', description: 'Fire - Hot, intense, popular', aliases: ['fire', 'hot', 'flame'] },
+        { value: '⚠️', description: 'Warning - Caution, experimental', aliases: ['warning', 'caution', 'alert'] },
+        { value: '✨', description: 'Sparkles - New, special, enhanced', aliases: ['sparkles', 'new', 'shine', 'star'] },
+        { value: '🎯', description: 'Target - Focused, precise', aliases: ['target', 'aim', 'focus'] },
+        { value: '🚀', description: 'Rocket - Fast, powerful, advanced', aliases: ['rocket', 'fast', 'speed'] },
+        { value: '💎', description: 'Diamond - Premium, quality', aliases: ['diamond', 'gem', 'premium'] },
+        { value: '🛡️', description: 'Shield - Protection, safety', aliases: ['shield', 'protect', 'defense'] },
+        { value: '⚔️', description: 'Swords - Combat, action', aliases: ['sword', 'swords', 'combat', 'battle'] },
+        { value: '🎭', description: 'Theater - Roleplay, personas', aliases: ['theater', 'mask', 'roleplay', 'rp'] },
+        { value: '🧠', description: 'Brain - Intelligence, thinking', aliases: ['brain', 'think', 'smart'] },
+        { value: '💬', description: 'Speech - Dialogue, conversation', aliases: ['speech', 'talk', 'dialogue', 'chat'] },
+        { value: '📚', description: 'Books - Knowledge, documentation', aliases: ['book', 'books', 'docs', 'knowledge'] },
+        { value: '🎨', description: 'Art - Creative, visual', aliases: ['art', 'paint', 'creative'] },
+        { value: '🔧', description: 'Wrench - Utility, tools', aliases: ['wrench', 'tool', 'utility', 'fix'] },
+        { value: '⭐', description: 'Star - Featured, recommended', aliases: ['star', 'featured', 'favorite'] },
+        { value: '🎪', description: 'Circus - Fun, entertainment', aliases: ['circus', 'fun', 'party'] },
+        { value: '🌙', description: 'Moon - Night, dark themes', aliases: ['moon', 'night', 'dark'] },
+        { value: '☀️', description: 'Sun - Day, bright, positive', aliases: ['sun', 'day', 'bright', 'light'] },
+        { value: '❤️', description: 'Heart - Love, romance, passion', aliases: ['heart', 'love', 'romance'] },
+        { value: '💀', description: 'Skull - Dark, horror, death', aliases: ['skull', 'death', 'horror', 'spooky'] }
     ],
     '@badge': [
         { value: 'NEW', description: 'Recently added feature' },
@@ -885,7 +885,7 @@ function getPromptSuggestions(valueText, valueStart, cursorPos, definition) {
         suggestions: matchingPrompts.map(p => {
             // Create a clear display showing what will be inserted
             const displayName = p.name.length > 40 ? p.name.substring(0, 37) + '...' : p.name;
-            const status = p.enabled ? 'âœ“ ' : '';
+            const status = p.enabled ? '✓ ' : '';
 
             return {
                 type: 'prompt',

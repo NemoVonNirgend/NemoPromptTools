@@ -12,7 +12,7 @@ import { parsePromptDirectives } from '../directives/prompt-directives.js';
 import { disableTrayMode } from './category-tray.js';
 
 // 1. CONFIGURATION & STATE
-const NEMO_BUILT_IN_PATTERNS = ['=+', 'â­â”€+', 'â”+'];
+const NEMO_BUILT_IN_PATTERNS = ['=+', '⭐─+', '━+'];
 
 const SELECTORS = {
     promptsContainer: '#completion_prompt_manager_list',
@@ -3676,7 +3676,7 @@ export const NemoPresetManager = {
                 this.render();
             }
 
-            this.showStatusMessage(`âœ… Added "${newPrompt.name}" to current preset!`, 'success', 3000);
+            this.showStatusMessage(`✅ Added "${newPrompt.name}" to current preset!`, 'success', 3000);
             console.log(`${LOG_PREFIX} Successfully added prompt to current preset: ${newPrompt.name}`);
             
         } catch (error) {

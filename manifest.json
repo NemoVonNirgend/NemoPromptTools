@@ -1,7 +1,7 @@
 {
   "display_name": "Nemo Prompt Tools Compatibility",
   "author": "@NemoVonNirgend",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Migration bridge for the prompt workstation now included in NemoPresetExt 6.0.",
   "js": "index.js",
   "homePage": "https://github.com/NemoVonNirgend/NemoPromptTools",
