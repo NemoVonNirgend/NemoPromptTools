@@ -1,0 +1,25 @@
+name: Compatibility bridge
+
+on:
+  push:
+    branches:
+      - prompt-tools-compat-v1.2
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: JavaScript syntax
+        run: |
+          node --check index.js
+          node --check standalone-runtime.js
+      - name: Contract tests
+        run: node --test tests/*.test.js

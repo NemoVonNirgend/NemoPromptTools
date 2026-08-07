@@ -1,10 +1,9 @@
 {
-  "display_name": "Nemo Prompt Tools",
+  "display_name": "Nemo Prompt Tools Compatibility",
   "author": "@NemoVonNirgend",
-  "version": "1.1.2",
-  "description": "Preset and character navigation plus prompt management tools.",
+  "version": "1.2.0",
+  "description": "Migration bridge for the prompt workstation now included in NemoPresetExt 6.0.",
   "js": "index.js",
-  "css": "styles.css",
   "homePage": "https://github.com/NemoVonNirgend/NemoPromptTools",
   "loading_order": 1005
 }
