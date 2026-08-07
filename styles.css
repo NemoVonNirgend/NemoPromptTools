@@ -3366,7 +3366,7 @@ body.nemo-extensions-overhaul-enabled #extensions_settings {
 .nemo-engine-section summary { cursor: pointer; display: flex; align-items: center; list-style: none; position: relative; }
 .nemo-engine-section summary > li.completion_prompt_manager_prompt, li.completion_prompt_manager_prompt { display: flex; align-items: flex-start; width: 100%; justify-content: space-between; flex-wrap: wrap; padding: 4px 0; gap: 4px; }
 .nemo-engine-section summary::-webkit-details-marker, .nemo-engine-section summary::marker { display: none; }
-.nemo-engine-section summary::before { content: '\E2 \2013 \B6 '; font-size: 0.75em; position: absolute; left: -15px; top: 50%; transform: translateY(-50%); color: var(--nemo-text-muted); pointer-events: none; transition: transform 0.2s ease; }
+.nemo-engine-section summary::before { content: '\25B6 '; font-size: 0.75em; position: absolute; left: -15px; top: 50%; transform: translateY(-50%); color: var(--nemo-text-muted); pointer-events: none; transition: transform 0.2s ease; }
 .nemo-engine-section[open] > summary::before { transform: translateY(-50%) rotate(90deg); }
 .nemo-engine-section summary > li.completion_prompt_manager_prompt > span.completion_prompt_manager_prompt_name { margin-left: 18px; }
 .nemo-engine-section .nemo-section-content { padding-left: 15px; border-left: 1px solid var(--nemo-border-color); margin-left: 5px; display: flex; flex-direction: column; gap: 2px; }
