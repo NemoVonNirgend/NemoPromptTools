@@ -7,7 +7,7 @@ const standalone = readFileSync(new URL('../standalone-runtime.js', import.meta.
 const manifest = JSON.parse(readFileSync(new URL('../manifest.json', import.meta.url), 'utf8'));
 
 test('bridge never declares the standalone stylesheet in the manifest', () => {
-    assert.equal(manifest.version, '1.2.0');
+    assert.equal(manifest.version, '1.2.1');
     assert.equal(manifest.css, undefined);
     assert.match(bootstrap, /mergedRuntimeAvailable/);
     assert.match(bootstrap, /capabilities\?\.promptTools === true/);
