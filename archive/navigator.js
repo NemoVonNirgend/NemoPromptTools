@@ -35,7 +35,7 @@ export class PresetNavigator {
     escapeHtml(unsafe) {
         if (typeof unsafe !== 'string') return '';
         return unsafe
-            .replace(/&/g, "&")
+            .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")

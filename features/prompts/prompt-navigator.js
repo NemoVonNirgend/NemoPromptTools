@@ -10,7 +10,7 @@ const NEMO_FAVORITE_PROMPTS_KEY = 'nemo-favorite-prompts';
 
 function escapeHtml(text) {
     return String(text ?? '')
-        .replace(/&/g, '&')
+        .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
