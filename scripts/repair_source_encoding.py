@@ -21,6 +21,15 @@ KNOWN_CSS_CONTENT_REPAIRS = {
     # it to byte-like code points rather than the intended U+25B6 glyph.
     r'\E2 \2013 \B6 ': r'\25B6 ',
 }
+KNOWN_SOURCE_REPAIRS = {
+    # ftfy's HTML-unescape pass must never weaken these XSS escaping helpers.
+    'archive/navigator.js': (
+        ('.replace(/&/g, "&")', '.replace(/&/g, "&amp;")'),
+    ),
+    'features/prompts/prompt-navigator.js': (
+        (".replace(/&/g, '&')", ".replace(/&/g, '&amp;')"),
+    ),
+}
 
 
 def iter_targets():
@@ -36,11 +45,18 @@ def iter_targets():
 def repair_text(text: str) -> str:
     current = text
     for _ in range(5):
-        repaired = fix_text(current)
+        repaired = fix_text(current, unescape_html=False)
         if repaired == current:
             break
         current = repaired
     return current
+
+
+def apply_known_source_repairs(relative_path: str, text: str) -> str:
+    repaired = text
+    for damaged, canonical in KNOWN_SOURCE_REPAIRS.get(relative_path, ()):
+        repaired = repaired.replace(damaged, canonical)
+    return repaired
 
 
 def escape_css_content_literals(text: str) -> str:
@@ -58,7 +74,7 @@ def escape_css_content_literals(text: str) -> str:
     return repaired
 
 
-def suspicious(text: str) -> list[str]:
+def suspicious(relative_path: str, text: str) -> list[str]:
     found = [marker for marker in MOJIBAKE_MARKERS if marker in text]
     controls = sorted({hex(ord(char)) for char in C1_PATTERN.findall(text)})
     if controls:
@@ -66,6 +82,9 @@ def suspicious(text: str) -> list[str]:
     for damaged in KNOWN_CSS_CONTENT_REPAIRS:
         if damaged in text:
             found.append(f'malformed CSS glyph escape: {damaged}')
+    for damaged, canonical in KNOWN_SOURCE_REPAIRS.get(relative_path, ()):
+        if damaged in text or canonical not in text:
+            found.append(f'broken source contract: expected {canonical}')
     return found
 
 
@@ -84,16 +103,18 @@ def main() -> int:
 
     for path in iter_targets():
         scanned += 1
+        relative_path = path.relative_to(ROOT).as_posix()
         original = path.read_text(encoding='utf-8')
         repaired = repair_text(original)
+        repaired = apply_known_source_repairs(relative_path, repaired)
         if path.suffix.lower() == '.css':
             repaired = escape_css_content_literals(repaired)
-        issues = suspicious(repaired)
+        issues = suspicious(relative_path, repaired)
         if issues:
-            failures.append({'path': str(path.relative_to(ROOT)), 'issues': issues})
+            failures.append({'path': relative_path, 'issues': issues})
         if repaired != original:
             changes.append({
-                'path': str(path.relative_to(ROOT)),
+                'path': relative_path,
                 'before_bytes': len(original.encode('utf-8')),
                 'after_bytes': len(repaired.encode('utf-8')),
             })
